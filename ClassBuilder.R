@@ -39,7 +39,8 @@ New_ModelPar = function(N, p, max_t, dat, method,
                                        tol = 1e-5,
                                        contraction = 0.5,
                                        eta = 1e-4,
-                                       init_parameters = runif(p+1)), 
+                                       init_parameters = runif(p+1),
+                                       learning_rate = 0.1), 
                         ...)
 {
   Validate_method(method)
@@ -48,6 +49,7 @@ New_ModelPar = function(N, p, max_t, dat, method,
                              tol = 1e-5,
                              contraction = 0.5,
                              eta = 1e-4,
+                             learning_rate = 0.1,
                              init_parameters = runif(p+1), .homonyms = "first")
   data = rlang::dots_list(N = N, p = p, max_t = max_t, dat = dat, Control = Control,
                           !!!list(...), .homonyms = "first")

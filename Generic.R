@@ -8,7 +8,13 @@ arg_filter <- function(args, fn) {
 
 
 easy_call = function(fn, args) {
-  do.call(fn, arg_filter(args, fn))
+  out = try(do.call(fn, arg_filter(args, fn)), FALSE)
+  if (inherits(out, "try-error")) {
+    para = names(formals(fn))
+    stop("These arguments are needed: ", para[!(para %in% names(args))], "\n")
+  } else{
+    return(out)
+  }
 }
 
 
@@ -673,6 +679,8 @@ DataFitting.ModelPar.DRIV.cf.hz.ml.est.rateCal = function(ModelPar){
                             Covariates2 = ModelPar$Covariates2, 
                             D_status = D_status, stime = stime, nfolds = ModelPar$nfolds, seed = ModelPar$seed)
   }
+  # print(names(args))
+  # print(names(formals(cfhaz_ml_integral_est_cpp_rateCal)))
   mod = easy_call(cfhaz_ml_integral_est_cpp_rateCal, args)
   # Coef = NULL
   # Var = NULL

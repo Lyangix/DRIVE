@@ -168,36 +168,161 @@ SimuArg2_both = New_SimuArg(nrep = 1000, N = 3200, p = 2, p_U = 1, Scenario = "e
 ################################################################################
 
 
-SimuArg_dep = New_SimuArg(nrep = 1000, N = 1600, p = 2, p_U = 1, Scenario = "exogenous", max_t = 3,
+SimuArg_dep = New_SimuArg(nrep = 1000, N = 1600, p = 2, p_U = 1, Scenario = "endogenous", max_t = 5,
                       theta = 0.1, 
                       unmeasured_Confounding = unmeasured_Confounding,
                       InitCovariates = InitCovariates,
                       InitAssignment = InitAssignment,
-                      SurvTime = SurvTime,
-                      SwitchingTime = SwitchingTime,
+                      SurvTime = SurvTime_endogenous,
+                      SwitchingTime = SwitchingTime_endogenous,
                       CensoringTime = CensoringTime,
                       Control = list(json_save = T,
-                                     Annotation = "dep"),
+                                     Annotation = "end"),
                       gamma = rep(c(1, -1), length.out = 2),
                       alpha = rep(0.25, 3),
                       beta = rep(0.25, 3),
-                      diffcoef = 0.5)
+                      diffcoef = 0.5,
+                      censoring_par = c(0.01, 0.01),
+                      censoring_intercept = 0.1)
 # DataGenerating(SimuArg_dep)
 
 
-SimuArg_KangSchafer = New_SimuArg(nrep = 1000, N = 1600, p = 1, p_U = 1, Scenario = "exogenous", max_t = 0.8,
-                          theta = 0.5, 
+SimuArg2_dep = New_SimuArg(nrep = 1000, N = 3200, p = 2, p_U = 1, Scenario = "endogenous", max_t = 5,
+                          theta = 0.1, 
+                          unmeasured_Confounding = unmeasured_Confounding,
+                          InitCovariates = InitCovariates,
+                          InitAssignment = InitAssignment,
+                          SurvTime = SurvTime_endogenous,
+                          SwitchingTime = SwitchingTime_endogenous,
+                          CensoringTime = CensoringTime,
+                          Control = list(json_save = T,
+                                         Annotation = "end"),
+                          gamma = rep(c(1, -1), length.out = 2),
+                          alpha = rep(0.25, 3),
+                          beta = rep(0.25, 3),
+                          diffcoef = 0.5,
+                          censoring_par = c(0.01, 0.01),
+                          censoring_intercept = 0.1)
+# DataGenerating(SimuArg2_dep)
+
+
+
+
+SimuArg_dep_prop = New_SimuArg(nrep = 1000, N = 1600, p = 2, p_U = 1, Scenario = "endogenous", max_t = 5,
+                          theta = 0.1, 
                           unmeasured_Confounding = unmeasured_Confounding,
                           InitCovariates = InitCovariates,
                           InitAssignment = InitAssignment_Nonlinear,
-                          SurvTime = SurvTime_Nonlinear,
-                          SwitchingTime = SwitchingTime,
+                          SurvTime = SurvTime_endogenous,
+                          SwitchingTime = SwitchingTime_endogenous,
                           CensoringTime = CensoringTime,
                           Control = list(json_save = T,
-                                         Annotation = "KangSchafer"),
-                          beta = rep(0.5, 2),
-                          diffcoef = 3)
-# DataGenerating(SimuArg_KangSchafer)
+                                         Annotation = "end_prop"),
+                          gamma = rep(c(1, -1), length.out = 2),
+                          alpha = rep(0.25, 3),
+                          beta = rep(0.25, 3),
+                          diffcoef = 0.5,
+                          censoring_par = c(0.01, 0.01),
+                          censoring_intercept = 0.1)
+# DataGenerating(SimuArg_dep_prop)
+
+
+SimuArg2_dep_prop = New_SimuArg(nrep = 1000, N = 3200, p = 2, p_U = 1, Scenario = "endogenous", max_t = 5,
+                           theta = 0.1, 
+                           unmeasured_Confounding = unmeasured_Confounding,
+                           InitCovariates = InitCovariates,
+                           InitAssignment = InitAssignment_Nonlinear,
+                           SurvTime = SurvTime_endogenous,
+                           SwitchingTime = SwitchingTime_endogenous,
+                           CensoringTime = CensoringTime,
+                           Control = list(json_save = T,
+                                          Annotation = "end_prop"),
+                           gamma = rep(c(1, -1), length.out = 2),
+                           alpha = rep(0.25, 3),
+                           beta = rep(0.25, 3),
+                           diffcoef = 0.5,
+                           censoring_par = c(0.01, 0.01),
+                           censoring_intercept = 0.1)
+# DataGenerating(SimuArg2_dep_prop)
+
+
+SimuArg_dep_surv = New_SimuArg(nrep = 1000, N = 1600, p = 2, p_U = 1, Scenario = "endogenous", max_t = 5,
+                          theta = 0.1, 
+                          unmeasured_Confounding = unmeasured_Confounding,
+                          InitCovariates = InitCovariates,
+                          InitAssignment = InitAssignment,
+                          SurvTime = SurvTime_endogenous_Nonlinear,
+                          SwitchingTime = SwitchingTime_endogenous,
+                          CensoringTime = CensoringTime,
+                          Control = list(json_save = T,
+                                         Annotation = "end_surv"),
+                          gamma = rep(c(1, -1), length.out = 2),
+                          alpha = rep(0.25, 3),
+                          beta = rep(0.25, 3),
+                          diffcoef = 0.5,
+                          censoring_par = c(0.01, 0.01),
+                          censoring_intercept = 0.1)
+# DataGenerating(SimuArg_dep_surv)
+
+
+SimuArg2_dep_surv = New_SimuArg(nrep = 1000, N = 3200, p = 2, p_U = 1, Scenario = "endogenous", max_t = 5,
+                           theta = 0.1, 
+                           unmeasured_Confounding = unmeasured_Confounding,
+                           InitCovariates = InitCovariates,
+                           InitAssignment = InitAssignment,
+                           SurvTime = SurvTime_endogenous_Nonlinear,
+                           SwitchingTime = SwitchingTime_endogenous,
+                           CensoringTime = CensoringTime,
+                           Control = list(json_save = T,
+                                          Annotation = "end_surv"),
+                           gamma = rep(c(1, -1), length.out = 2),
+                           alpha = rep(0.25, 3),
+                           beta = rep(0.25, 3),
+                           diffcoef = 0.5,
+                           censoring_par = c(0.01, 0.01),
+                           censoring_intercept = 0.1)
+# DataGenerating(SimuArg2_dep_surv)
+
+
+SimuArg_dep_both = New_SimuArg(nrep = 1000, N = 1600, p = 2, p_U = 1, Scenario = "endogenous", max_t = 5,
+                               theta = 0.1, 
+                               unmeasured_Confounding = unmeasured_Confounding,
+                               InitCovariates = InitCovariates,
+                               InitAssignment = InitAssignment_Nonlinear,
+                               SurvTime = SurvTime_endogenous_Nonlinear,
+                               SwitchingTime = SwitchingTime_endogenous,
+                               CensoringTime = CensoringTime,
+                               Control = list(json_save = T,
+                                              Annotation = "end_both"),
+                               gamma = rep(c(1, -1), length.out = 2),
+                               alpha = rep(0.25, 3),
+                               beta = rep(0.25, 3),
+                               diffcoef = 0.5,
+                               censoring_par = c(0.01, 0.01),
+                               censoring_intercept = 0.1)
+# DataGenerating(SimuArg_dep_both)
+
+
+SimuArg2_dep_both = New_SimuArg(nrep = 1000, N = 3200, p = 2, p_U = 1, Scenario = "endogenous", max_t = 5,
+                                theta = 0.1, 
+                                unmeasured_Confounding = unmeasured_Confounding,
+                                InitCovariates = InitCovariates,
+                                InitAssignment = InitAssignment_Nonlinear,
+                                SurvTime = SurvTime_endogenous_Nonlinear,
+                                SwitchingTime = SwitchingTime_endogenous,
+                                CensoringTime = CensoringTime,
+                                Control = list(json_save = T,
+                                               Annotation = "end_both"),
+                                gamma = rep(c(1, -1), length.out = 2),
+                                alpha = rep(0.25, 3),
+                                beta = rep(0.25, 3),
+                                diffcoef = 0.5,
+                                censoring_par = c(0.01, 0.01),
+                                censoring_intercept = 0.1)
+# DataGenerating(SimuArg2_dep_both)
+
+
+
 
 ml_fitting_SurvCART = function(data, predictx, stime) {
   names_val = colnames(data)
@@ -256,8 +381,9 @@ ml_fitting_rfsrc2 = function(data, predictx) {
 
 ml_fitting_surv_true = function(Covariates, stime) {
   L = Covariates
-  L = cbind(exp(L[, 1]/2))
-  L = ifelse(L[, 1] > exp(0.25), exp(3) - L[, 1], 0.25 * L[, 1])
+  L[,1] = cbind(exp(L[, 1]/2))
+  L[,1] = ifelse(L[, 1] > exp(0.25), exp(3) - L[, 1], 0.25 * L[, 1])
+  L[,2] = Covariates[, 2]/(1 + exp(Covariates[, 1])) + 1
   # m = matrix((2.35 + 0.274 * abs(Covariates[, 1]) + 0.0685), nrow = nrow(Covariates), 
   #            ncol = length(stime), byrow = FALSE)
   m = (2.35 + 0.274 * abs(L) + 0.0685) %*% t(c(0, diff(stime)))
@@ -329,7 +455,7 @@ ml_fitting_propensity_logit = function(data, predictx){
 
 
 
-trial2 = SimuRun_rateCal(SimuArg_KangSchafer, methods = c("DRIV.cf.hz.ml.est.rateCal"),
+trial2 = SimuRun_rateCal(SimuArg_both, methods = c("DRIV.cf.hz.ml.est.rateCal"),
                         rate_propensity = matrix(seq(0, 4, length.out = 6), nrow = 6, ncol = 6, byrow = FALSE), 
                         rate_hazard = matrix(seq(0, 1, by = 0.2), nrow = 6, ncol = 6, byrow = TRUE), 
                         target_biases_hazard = c(0.1, 0.2, 0.4, 0.6, 0.8, 1),
@@ -338,7 +464,7 @@ trial2 = SimuRun_rateCal(SimuArg_KangSchafer, methods = c("DRIV.cf.hz.ml.est.rat
                         ml_fitting_propensity = ml_fitting_propensity_logit,
                         ml_fitting_surv_true = ml_fitting_surv_true,
                         ml_fitting_propensity_true = ml_fitting_propensity_true,
-                        sequence = 1:2, true_theta = 0.5)
+                        sequence = 1:2, true_theta = 0.1, nfolds = 5)
 # save(trial2, file="~/dtr_DRIV/trial2(del).RData")
 
 # trial2 = SimuRun_rateCal(SimuArg_KangSchafer, methods = c("DRIV.cf.hz.ml.est.rateCal"),
