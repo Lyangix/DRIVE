@@ -5,6 +5,6 @@ driv_s_est <- function(init_parameters, time, event, IV, IV_c, Covariates, D_sta
     .Call(`_DRIVE_driv_s_est`, init_parameters, time, event, IV, IV_c, Covariates, D_status, stime, max_iter, tol, eta, contraction)
 }
 
-integral_customized_est <- function(init_parameters, time, event, IV, IV_c, ConfoundingPart, D_status, stime, max_iter, tol, eta, contraction) {
-    .Call(`_DRIVE_integral_customized_est`, init_parameters, time, event, IV, IV_c, ConfoundingPart, D_status, stime, max_iter, tol, eta, contraction)
+driv_cf_ml_est <- function(init_parameters, time, event, IV, IV_c, ConfoundingPart, D_status, stime, max_iter, tol, eta, contraction) {
+    .Call(`_DRIVE_driv_cf_ml_est`, init_parameters, time, event, IV, IV_c, ConfoundingPart, D_status, stime, max_iter, tol, eta, contraction)
 }

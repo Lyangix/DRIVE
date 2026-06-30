@@ -5,7 +5,7 @@ using namespace Rcpp;
 
 
 // [[Rcpp::export]]
-SEXP integral_customized_est(
+SEXP driv_cf_ml_est(
     double init_parameters,
     arma::vec time,
     arma::vec event,
