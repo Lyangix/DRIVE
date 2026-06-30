@@ -2,13 +2,16 @@
 # Each function is passed by name into New_SimuArg() and called by DataGenerating().
 
 #' Generate unmeasured confounders (independent)
-#' @param N Sample size. @param p_U Number of unmeasured confounders.
+#' @param N Sample size.
+#' @param p_U Number of unmeasured confounders.
 #' @return An `N x p_U` matrix of uniform draws.
 #' @export
 unmeasured_Confounding <- function(N, p_U) return(matrix(runif(N * p_U), nrow = N, ncol = p_U))
 
 #' Generate unmeasured confounders dependent on a measured covariate
-#' @param N Sample size. @param p Covariate index. @param p_U Number of unmeasured confounders.
+#' @param N Sample size.
+#' @param p Covariate index (column of `Covariates` used as the base).
+#' @param p_U Number of unmeasured confounders.
 #' @param Covariates Measured covariate matrix.
 #' @return A length-`N` vector.
 #' @export
@@ -16,7 +19,9 @@ unmeasured_Confounding_dependent <- function(N, p, p_U, Covariates) return(Covar
 
 
 #' Initialise measured (and optionally unmeasured) covariates
-#' @param N Sample size. @param p Number of measured covariates. @param p_U Number of unmeasured confounders.
+#' @param N Sample size.
+#' @param p Number of measured covariates.
+#' @param p_U Number of unmeasured confounders.
 #' @param unmeasured_Confounding Function generating unmeasured confounders.
 #' @return Covariate matrix.
 #' @export
@@ -35,7 +40,10 @@ InitCovariates <- function(N, p, p_U, unmeasured_Confounding) {
 
 
 #' Assign treatment via a linear propensity score
-#' @param N Sample size. @param p Number of covariates. @param Covariates Covariate matrix. @param gamma Coefficients.
+#' @param N Sample size.
+#' @param p Number of covariates.
+#' @param Covariates Covariate matrix.
+#' @param gamma Coefficient vector for the propensity score linear predictor.
 #' @return Binary treatment vector.
 #' @export
 InitAssignment <- function(N, p, Covariates, gamma) {
@@ -45,7 +53,9 @@ InitAssignment <- function(N, p, Covariates, gamma) {
 
 
 #' Assign treatment via a nonlinear propensity score
-#' @param N Sample size. @param p Number of covariates. @param Covariates Covariate matrix.
+#' @param N Sample size.
+#' @param p Number of covariates.
+#' @param Covariates Covariate matrix.
 #' @return Binary treatment vector.
 #' @export
 InitAssignment_Nonlinear <- function(N, p, Covariates) {
@@ -58,8 +68,13 @@ InitAssignment_Nonlinear <- function(N, p, Covariates) {
 
 
 #' Survival time under a linear structural model
-#' @param N Sample size. @param p Number of covariates. @param Covariates Covariate matrix.
-#' @param W Switching time. @param theta Treatment effect. @param alpha Covariate effects. @param Z Treatment.
+#' @param N Sample size.
+#' @param p Number of covariates.
+#' @param Covariates Covariate matrix.
+#' @param W Switching-time vector.
+#' @param theta True treatment effect.
+#' @param alpha Covariate effect vector.
+#' @param Z Treatment assignment vector.
 #' @return List with `T_D` (observed) and `T_0` (control) event times.
 #' @export
 SurvTime <- function(N, p, Covariates, W, theta, alpha, Z) {
@@ -103,8 +118,12 @@ SurvTime_endogenous <- function(N, p, Covariates, W, theta, alpha, Z, T) {
 
 
 #' Survival time under a nonlinear structural model
-#' @param N Sample size. @param p Number of covariates (must be 2). @param Covariates Covariate matrix.
-#' @param W Switching time. @param theta Treatment effect. @param Z Treatment.
+#' @param N Sample size.
+#' @param p Number of covariates (must be 2).
+#' @param Covariates Covariate matrix.
+#' @param W Switching-time vector.
+#' @param theta True treatment effect.
+#' @param Z Treatment assignment vector.
 #' @return List with `T_D` and `T_0`.
 #' @export
 SurvTime_Nonlinear <- function(N, p, Covariates, W, theta, Z) {
@@ -162,8 +181,12 @@ SurvTime_endogenous_Nonlinear <- function(N, p, Covariates, W, theta, Z, T) {
 
 
 #' Treatment-switching time (exogenous)
-#' @param N Sample size. @param p Number of covariates. @param Covariates Covariate matrix.
-#' @param Z Treatment. @param beta Covariate effects. @param diffcoef Treatment-arm differential.
+#' @param N Sample size.
+#' @param p Number of covariates.
+#' @param Covariates Covariate matrix.
+#' @param Z Treatment assignment vector.
+#' @param beta Covariate effect vector on switching rate.
+#' @param diffcoef Treatment-arm differential for switching rate.
 #' @return Switching-time vector.
 #' @export
 SwitchingTime <- function(N, p, Covariates, Z, beta, diffcoef) {
@@ -174,7 +197,8 @@ SwitchingTime <- function(N, p, Covariates, Z, beta, diffcoef) {
 
 #' Treatment-switching time (endogenous)
 #' @inheritParams SwitchingTime
-#' @param T Pre-drawn baseline event time. @param alpha Covariate effects on the baseline.
+#' @param T Pre-drawn baseline event time.
+#' @param alpha Covariate effect vector on the baseline hazard.
 #' @return Switching-time vector.
 #' @export
 SwitchingTime_endogenous <- function(N, p, Covariates, Z, beta, diffcoef, T, alpha) {
@@ -186,8 +210,11 @@ SwitchingTime_endogenous <- function(N, p, Covariates, Z, beta, diffcoef, T, alp
 
 
 #' Censoring time (linear)
-#' @param N Sample size. @param p Number of covariates. @param Covariates Covariate matrix.
-#' @param censoring_par Covariate effects on censoring. @param censoring_intercept Baseline censoring rate.
+#' @param N Sample size.
+#' @param p Number of covariates.
+#' @param Covariates Covariate matrix.
+#' @param censoring_par Covariate effect vector on censoring rate.
+#' @param censoring_intercept Baseline (intercept) censoring rate.
 #' @return Censoring-time vector.
 #' @export
 CensoringTime <- function(N, p, Covariates, censoring_par, censoring_intercept) {
@@ -195,7 +222,9 @@ CensoringTime <- function(N, p, Covariates, censoring_par, censoring_intercept) 
 }
 
 #' Censoring time (nonlinear)
-#' @param N Sample size. @param p Number of covariates. @param Covariates Covariate matrix.
+#' @param N Sample size.
+#' @param p Number of covariates.
+#' @param Covariates Covariate matrix.
 #' @return Censoring-time vector.
 #' @export
 CensoringTime_nonlinear <- function(N, p, Covariates) {

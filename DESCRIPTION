@@ -14,6 +14,8 @@ Description: Simulation and estimation tools for additive-hazards survival model
     variant that accepts user-supplied machine-learning nuisance estimators.
     The estimating equations are solved in C++ via Rcpp/RcppArmadillo.
 License: GPL-3
+URL: https://github.com/Lyangix/DRIVE
+BugReports: https://github.com/Lyangix/DRIVE/issues
 Encoding: UTF-8
 Depends:
     R (>= 3.5.0)
@@ -33,4 +35,4 @@ Suggests:
     randomForestSRC,
     LongCART,
     rpart
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.3

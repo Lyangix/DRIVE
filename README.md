@@ -1,5 +1,7 @@
 # DRIVE
 
+[![R-CMD-check](https://github.com/Lyangix/DRIVE/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Lyangix/DRIVE/actions/workflows/R-CMD-check.yaml)
+
 Doubly Robust Instrumental Variable Estimation for survival data with treatment
 switching. The package provides simulation tooling and a set of estimators for
 additive-hazards models when patients may switch treatment during follow-up.

@@ -331,11 +331,12 @@ DataFitting.ModelPar.DRIV.cf.hz.ml.est <- function(ModelPar) {
 
 
 #' Print simulation results
-#' @param SimuResults A `SimuResults` object from [SimuRun()].
+#' @param x A `SimuResults` object from [SimuRun()].
 #' @param ... Optional `Comp_parameters` for bias computation.
 #' @return Invisibly `NULL`; prints bias, SD and mean SE tables.
 #' @export
-print.SimuResults <- function(SimuResults, ...) {
+print.SimuResults <- function(x, ...) {
+  SimuResults <- x
   results <- rlang::dots_list(!!!SimuResults, !!!list(...),
                               Comp_parameters = rep(0, SimuResults$initials$p + 1),
                               .homonyms = "first")
@@ -372,12 +373,13 @@ print.SimuResults <- function(SimuResults, ...) {
 
 
 #' Print treatment-switching estimation results
-#' @param Results A `TRTSWE` object from [TRTSWE()].
+#' @param x A `TRTSWE` object from [TRTSWE()].
 #' @param all Logical; if `TRUE` print full coefficient / SE / p-value tables.
 #' @param ... Unused.
 #' @return Invisibly `NULL`; prints estimate tables.
 #' @export
-print.TRTSWE <- function(Results, all = FALSE, ...) {
+print.TRTSWE <- function(x, all = FALSE, ...) {
+  Results <- x
   results <- rlang::dots_list(!!!Results, !!!list(...),
                               .homonyms = "first")
 
