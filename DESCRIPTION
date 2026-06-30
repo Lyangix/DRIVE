@@ -1,0 +1,36 @@
+Package: DRIVE
+Type: Package
+Title: Doubly Robust Instrumental Variable Estimation for Survival Data with Treatment Switching
+Version: 0.1.0
+Authors@R:
+    person(given = "Yang",
+           family = "Liu",
+           email = "liu02528@umn.edu",
+           role = c("aut", "cre"))
+Description: Simulation and estimation tools for additive-hazards survival models
+    with treatment switching. Provides naive comparators (intention-to-treat,
+    censoring/removal at switch, and a time-varying treatment model) alongside
+    doubly robust instrumental-variable estimators, including a cross-fitted
+    variant that accepts user-supplied machine-learning nuisance estimators.
+    The estimating equations are solved in C++ via Rcpp/RcppArmadillo.
+License: GPL-3
+Encoding: UTF-8
+Depends:
+    R (>= 3.5.0)
+Imports:
+    Rcpp,
+    rlang,
+    jsonlite,
+    survival,
+    ahaz,
+    timereg,
+    stringr,
+    stats
+LinkingTo:
+    Rcpp,
+    RcppArmadillo
+Suggests:
+    randomForestSRC,
+    LongCART,
+    rpart
+RoxygenNote: 7.3.1

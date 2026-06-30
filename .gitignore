@@ -2,3 +2,17 @@
 .Rhistory
 .RData
 .Ruserdata
+
+# macOS
+.DS_Store
+
+# Compiled C++ objects / shared libraries
+src/*.o
+src/*.so
+src/*.dll
+src/*.rds
+
+# R package build artifacts
+*.tar.gz
+..Rcheck/
+*.Rcheck/

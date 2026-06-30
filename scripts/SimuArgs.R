@@ -1,4 +1,4 @@
-source("Settings.R")
+library(DRIVE)
 library(LongCART)
 library(randomForestSRC)
 
@@ -455,17 +455,15 @@ ml_fitting_propensity_logit = function(data, predictx){
 
 
 
-trial2 = SimuRun_rateCal(SimuArg_both, methods = c("DRIV.cf.hz.ml.est.rateCal"),
-                        rate_propensity = matrix(seq(0, 4, length.out = 6), nrow = 6, ncol = 6, byrow = FALSE), 
-                        rate_hazard = matrix(seq(0, 1, by = 0.2), nrow = 6, ncol = 6, byrow = TRUE), 
-                        target_biases_hazard = c(0.1, 0.2, 0.4, 0.6, 0.8, 1),
-                        target_biases_prop = seq(0, 0.5, by = 0.1), learning_rate = 0.1,
-                        ml_fitting_surv = ml_fitting_rfsrc2,
-                        ml_fitting_propensity = ml_fitting_propensity_logit,
-                        ml_fitting_surv_true = ml_fitting_surv_true,
-                        ml_fitting_propensity_true = ml_fitting_propensity_true,
-                        sequence = 1:2, true_theta = 0.1, nfolds = 5)
-# save(trial2, file="~/dtr_DRIV/trial2(del).RData")
+# Example: generate data then run the focus methods on a few replicates.
+# DataGenerating(SimuArg)   # writes DataGenerated/<N><Annotation>/<rep>.json
+trial = SimuRun(SimuArg,
+                methods = c("ITT", "remove", "recensor", "TimeVar",
+                            "DRIV.s", "DRIV.cf.hz.ml.est"),
+                ml_fitting_surv = ml_fitting_rfsrc2,
+                ml_fitting_propensity = ml_fitting_propensity_logit,
+                sequence = 1:2, nfolds = 5)
+trial
 
 # trial2 = SimuRun_rateCal(SimuArg_KangSchafer, methods = c("DRIV.cf.hz.ml.est.rateCal"),
 #                         rate = seq(0, 1, by = 0.2),

@@ -1,6 +1,7 @@
-source("Settings.R")
+library(DRIVE)
 library(LongCART)
 library(randomForestSRC)
+library(rpart)
 load("AnalysisData2.rda")
 
 ml_fitting_rfsrc = function(data, predictx) {
@@ -51,11 +52,10 @@ dat_DRIV = list(T_D_c = round(dat$time, 1),
                 Z = Z,
                 Covariates = as.matrix(Covariates),
                 D_status = D_status)
-results = TRTSWE(dat_DRIV, max_t = max(stime_new), methods = c("DRIV.s", 
-                                                               "DRIV.cf.hz.est",
+results = TRTSWE(dat_DRIV, max_t = max(stime_new), methods = c("DRIV.s",
                                                                "DRIV.cf.hz.ml.est",
-                                                               "ITT", "recensor", "remove", 
-                                                               "TimeVar"), 
+                                                               "ITT", "recensor", "remove",
+                                                               "TimeVar"),
                  ml_fitting_propensity = ml_fitting_propensity,
                  ml_fitting_surv = ml_fitting_rfsrc,
                  Control = list(init_parameters = rep(0, 20),
@@ -85,16 +85,15 @@ dat_DRIV = list(T_D_c = round(dat$time, 1),
                 Covariates = as.matrix(Covariates),
                 Covariates2 = as.matrix(Covariates2),
                 D_status = D_status)
-results = TRTSWE(dat_DRIV, max_t = max(stime_new), methods = c("DRIV.s", 
-                                                               "DRIV.cf.hz.est",
+results = TRTSWE(dat_DRIV, max_t = max(stime_new), methods = c("DRIV.s",
                                                                "DRIV.cf.hz.ml.est",
-                                                               "ITT", "recensor", "remove", 
-                                                               "TimeVar"), 
+                                                               "ITT", "recensor", "remove",
+                                                               "TimeVar"),
                  ml_fitting_propensity = ml_fitting_propensity,
                  ml_fitting_surv = ml_fitting_rfsrc,
                  Control = list(init_parameters = rep(0, 11),
                                 seed = rpois(1, lambda = 10*abs(rnorm(1))),
-                                nfolds = 796, 
+                                nfolds = 796,
                                 B = 100))
 results
 

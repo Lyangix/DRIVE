@@ -1,0 +1,6 @@
+^scripts$
+^.*\.Rproj$
+^\.Rproj\.user$
+^\.git$
+^\.DS_Store$
+^.*\.DS_Store$

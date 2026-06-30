@@ -1,0 +1,51 @@
+# Hand-maintained namespace.
+# If you switch to roxygen2, run devtools::document() to regenerate this file.
+
+useDynLib(DRIVE, .registration = TRUE)
+importFrom(Rcpp, sourceCpp)
+importFrom(stats, glm, binomial, predict, coef, vcov, runif, rexp, rbinom,
+           pnorm, sd, formula)
+
+# Generics
+export(DataGenerating)
+export(DataFitting)
+
+# S3 methods
+S3method(DataGenerating, SimuArg.exogenous)
+S3method(DataGenerating, SimuArg.endogenous)
+S3method(DataFitting, ModelPar.ITT)
+S3method(DataFitting, ModelPar.remove)
+S3method(DataFitting, ModelPar.recensor)
+S3method(DataFitting, ModelPar.TimeVar)
+S3method(DataFitting, ModelPar.DRIV.s)
+S3method(DataFitting, ModelPar.DRIV.cf.hz.ml.est)
+S3method(print, SimuResults)
+S3method(print, TRTSWE)
+
+# Constructors and drivers
+export(New_SimuArg)
+export(New_ModelPar)
+export(SimuRun)
+export(TRTSWE)
+export(Validate_scenario)
+export(Validate_method)
+
+# Estimating-equation wrappers
+export(integral2_est_cpp)
+export(cfhaz_ml_integral_est_cpp)
+export(expit)
+
+# Data-generating building blocks
+export(unmeasured_Confounding)
+export(unmeasured_Confounding_dependent)
+export(InitCovariates)
+export(InitAssignment)
+export(InitAssignment_Nonlinear)
+export(SurvTime)
+export(SurvTime_endogenous)
+export(SurvTime_Nonlinear)
+export(SurvTime_endogenous_Nonlinear)
+export(SwitchingTime)
+export(SwitchingTime_endogenous)
+export(CensoringTime)
+export(CensoringTime_nonlinear)
