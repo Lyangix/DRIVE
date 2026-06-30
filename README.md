@@ -63,12 +63,3 @@ src/     C++ estimating-equation solvers
 man/     auto-generated Rd documentation (do not edit by hand)
 scripts/ example / reproduction scripts (not part of the package build)
 ```
-
-## Development notes
-
-After changing any `// [[Rcpp::export]]` signature in `src/`, regenerate the
-Rcpp glue (`R/RcppExports.R`, `src/RcppExports.cpp`) and man pages with:
-
-```r
-devtools::document()
-```
