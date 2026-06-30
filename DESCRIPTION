@@ -3,9 +3,9 @@ Type: Package
 Title: Doubly Robust Instrumental Variable Estimation for Survival Data with Treatment Switching
 Version: 0.1.0
 Authors@R:
-    person(given = "Yangli",
+    person(given = "Yang",
            family = "Liu",
-           email = "youngoyangliu@gmail.com",
+           email = "liu02528@umn.edu",
            role = c("aut", "cre"))
 Description: Simulation and estimation tools for additive-hazards survival models
     with treatment switching. Provides naive comparators (intention-to-treat,
