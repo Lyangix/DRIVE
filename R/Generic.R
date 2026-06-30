@@ -271,7 +271,8 @@ DataFitting.ModelPar.DRIV.s <- function(ModelPar) {
   }
   mod <- easy_call(driv_s_est_cpp, args)
   return(list(Coef = mod$x,
-              Var = mod$var,
+              Var = mod$var,            # joint semi-parametric sandwich variance
+              Var_orig = mod$var_orig,  # original scalar-sandwich variance (reference)
               Convergence = mod$Convergence,
               dLam = mod$dLam))
 }

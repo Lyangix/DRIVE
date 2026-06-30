@@ -29,7 +29,10 @@ cf_group <- function(nfolds, datasize, seed) {
 #' @param D_status Treatment status at each grid time (matrix).
 #' @param stime Grid of event times.
 #' @param max_iter,tol,contraction,eta Newton / line-search controls.
-#' @return A list with the estimate `x`, variance `var`, `Convergence`, and `stime`.
+#' @return A list with the estimate `x`, the variance `var` (the joint
+#'   semi-parametric sandwich estimator), `var_orig` (the original
+#'   scalar-sandwich estimator, for reference), `var_joint` (alias of `var`),
+#'   `Convergence`, and `stime`.
 #' @export
 driv_s_est_cpp <- function(init_parameters, time, event, IV,
                               Covariates, Covariates2, D_status, stime, max_iter = 50, tol = 1e-5,

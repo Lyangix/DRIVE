@@ -136,8 +136,8 @@ SEXP driv_s_est(
               
               dPhi(i, kk) = dPhi(i, kk) + (dNt(i, j) - Yt(i, j) * dLam[j]) * int_D(i, j) * exp(betaD * int_D(i, j)) -
                 exp(betaD*int_D(i,j))*Yt(i,j)*dLam_dbetaD[j]-
-                int_dexpbetaD(i, j) * (IV[j] * betaD + Covbeta[i]) -
-                int_expbetaD(i, j) * IV[j];
+                int_dexpbetaD(i, j) * (IV[i] * betaD + Covbeta[i]) -
+                int_expbetaD(i, j) * IV[i];
             }
             else
             {
@@ -330,13 +330,87 @@ SEXP driv_s_est(
   }
   Asyvar = hatsigma / (hatphi*hatphi);
   // arma::arma_print((hatsigma/ (Hessian(0, 0) * Hessian(0, 0))));
-  
-  
+
+
+  // ---------- joint sandwich variance (semi-parametric specification) ----------
+  // Full M-estimation sandwich over beta = (theta, alpha, gamma):
+  //   Var(theta_hat) = [ A^{-1} Omega A^{-T} ]_{11},
+  // where A is the bread (derivative of the stacked estimating functions, with
+  // the profiled-baseline derivatives) and Omega is the meat built from the
+  // profile-corrected influence contributions U_tilde_i. The propensity design
+  // is [1, Covariates] (intercept + survival covariates); the propensity block
+  // is first-order orthogonal so this proxy is immaterial when Covariates2 differ.
+  double var_joint;
+  {
+    int pp = p + 1;             // propensity design dimension (intercept + covariates)
+    int d  = 1 + p + pp;
+    arma::vec SY_IVc(k, arma::fill::zeros);
+    arma::mat SY_X(p, k, arma::fill::zeros);
+    for (int i = 0; i < n; i++)
+      for (int j = 0; j < k; j++) {
+        double w = exp(betaD * int_D(i, j)) * Yt(i, j);
+        SY_IVc[j] += w * IV_c[i];
+        for (int m = 0; m < p; m++) SY_X(m, j) += w * Covariates(i, m);
+      }
+    arma::mat Ujoint(d, n, arma::fill::zeros);
+    arma::vec res_store(n, arma::fill::zeros);
+    for (int i = 0; i < n; i++) {
+      double res_i = 0.0, BPsi = 0.0;
+      arma::vec BPhi(p, arma::fill::zeros);
+      for (int j = 0; j < k; j++) {
+        double e = exp(int_D(i, j) * betaD);
+        double dres;
+        if (j == 0)
+          dres = e * (dNt(i, j) - Yt(i, j) * dLam[j]) - int_expbetaD(i, j) * (betaD * IV[i] + Covbeta[i]);
+        else
+          dres = e * (dNt(i, j) - Yt(i, j) * dLam[j]) - Yt(i, j-1) * int_expbetaD(i, j) * (betaD * D_status(i, j-1) + Covbeta[i]);
+        res_i += dres;
+        double xiIV = (SY[j] > 0) ? SY_IVc[j] / SY[j] : 0.0;
+        BPsi += xiIV * dres;
+        for (int m = 0; m < p; m++) { double xiX = (SY[j] > 0) ? SY_X(m, j) / SY[j] : 0.0; BPhi[m] += xiX * dres; }
+      }
+      res_store[i] = res_i;
+      Ujoint(0, i) = IV_c[i] * res_i - BPsi;                       // Psi_i + B_Psi
+      for (int m = 0; m < p; m++) Ujoint(1 + m, i) = Covariates(i, m) * res_i - BPhi[m];  // Phi_i + B_Phi
+      Ujoint(1 + p, i) = IV_c[i];                                  // propensity intercept block
+      for (int m = 0; m < p; m++) Ujoint(1 + p + 1 + m, i) = Covariates(i, m) * IV_c[i];  // propensity covariate block
+    }
+    arma::vec Ubar = arma::mean(Ujoint, 1);
+    for (int i = 0; i < n; i++) Ujoint.col(i) -= Ubar;
+    arma::mat Omega = Ujoint * Ujoint.t();
+
+    arma::mat Aj(d, d, arma::fill::zeros);
+    Aj.submat(0, 0, p, p) = Hessian;                               // d(Psi,Phi)/d(theta,alpha), profiled
+    for (int i = 0; i < n; i++) {
+      double ex = IV[i] - IV_c[i];                                 // expit(gamma' z_i)
+      double w  = ex * (1.0 - ex);
+      Aj(0, 1 + p) += -w * res_store[i];                           // dPsi/dgamma_intercept
+      for (int m = 0; m < p; m++) Aj(0, 1 + p + 1 + m) += -w * res_store[i] * Covariates(i, m);
+      for (int a = 0; a < pp; a++) {
+        double za = (a == 0) ? 1.0 : Covariates(i, a-1);
+        for (int b = 0; b < pp; b++) {
+          double zb = (b == 0) ? 1.0 : Covariates(i, b-1);
+          Aj(1 + p + a, 1 + p + b) += -w * za * zb;                // dg/dgamma
+        }
+      }
+    }
+    arma::mat Ainv;
+    if (arma::inv(Ainv, Aj)) {
+      arma::mat V = Ainv * Omega * Ainv.t();
+      var_joint = V(0, 0);
+    } else {
+      var_joint = Asyvar;                                          // fallback if singular
+    }
+  }
+
+
   return Rcpp::List::create(
     Named("x") = init_parameters,
     Named("Convergence") = Convergence,
     Named("iter") = step,
-    Named("var") = Asyvar,
+    Named("var") = var_joint,
+    Named("var_orig") = Asyvar,
+    Named("var_joint") = var_joint,
     Named("dLam") = dLam
   );
 }

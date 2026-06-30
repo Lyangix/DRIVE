@@ -1,4 +1,5 @@
 ^scripts$
+^tools$
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.git$
