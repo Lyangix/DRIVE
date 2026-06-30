@@ -11,9 +11,9 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// integral2_est
-SEXP integral2_est(arma::vec init_parameters, arma::vec time, arma::vec event, arma::vec IV, arma::vec IV_c, arma::mat Covariates, arma::mat D_status, arma::vec stime, int max_iter, double tol, double eta, double contraction);
-RcppExport SEXP _DRIVE_integral2_est(SEXP init_parametersSEXP, SEXP timeSEXP, SEXP eventSEXP, SEXP IVSEXP, SEXP IV_cSEXP, SEXP CovariatesSEXP, SEXP D_statusSEXP, SEXP stimeSEXP, SEXP max_iterSEXP, SEXP tolSEXP, SEXP etaSEXP, SEXP contractionSEXP) {
+// driv_s_est
+SEXP driv_s_est(arma::vec init_parameters, arma::vec time, arma::vec event, arma::vec IV, arma::vec IV_c, arma::mat Covariates, arma::mat D_status, arma::vec stime, int max_iter, double tol, double eta, double contraction);
+RcppExport SEXP _DRIVE_driv_s_est(SEXP init_parametersSEXP, SEXP timeSEXP, SEXP eventSEXP, SEXP IVSEXP, SEXP IV_cSEXP, SEXP CovariatesSEXP, SEXP D_statusSEXP, SEXP stimeSEXP, SEXP max_iterSEXP, SEXP tolSEXP, SEXP etaSEXP, SEXP contractionSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -29,7 +29,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< double >::type eta(etaSEXP);
     Rcpp::traits::input_parameter< double >::type contraction(contractionSEXP);
-    rcpp_result_gen = Rcpp::wrap(integral2_est(init_parameters, time, event, IV, IV_c, Covariates, D_status, stime, max_iter, tol, eta, contraction));
+    rcpp_result_gen = Rcpp::wrap(driv_s_est(init_parameters, time, event, IV, IV_c, Covariates, D_status, stime, max_iter, tol, eta, contraction));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -57,7 +57,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_DRIVE_integral2_est", (DL_FUNC) &_DRIVE_integral2_est, 12},
+    {"_DRIVE_driv_s_est", (DL_FUNC) &_DRIVE_driv_s_est, 12},
     {"_DRIVE_integral_customized_est", (DL_FUNC) &_DRIVE_integral_customized_est, 12},
     {NULL, NULL, 0}
 };

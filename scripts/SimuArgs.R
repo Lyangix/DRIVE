@@ -408,7 +408,7 @@ ml_fitting_DRIV = function(data, predictx) {
   mod = glm(IV ~ ., data = tmp_df, family = binomial(link = "logit"))
   IV_c = data$IV - expit(predict(mod))
   init_parameters = runif(1 + p)
-  out = integral2_est(init_parameters = init_parameters, time = data$time, 
+  out = DRIVE:::driv_s_est(init_parameters = init_parameters, time = data$time,
                       event = data$event, IV = data$IV, IV_c = IV_c, Covariates = data$Covariates, 
                       D_status = data$D_status, stime = data$stime, max_iter = 50,
                       tol = 1e-5, contraction = 0.5, eta = 1e-4)
