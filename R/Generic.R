@@ -323,7 +323,7 @@ DataFitting.ModelPar.DRIV.cf.hz.ml.est <- function(ModelPar) {
                              Covariates2 = ModelPar$Covariates2,
                              D_status = D_status, stime = stime, nfolds = ModelPar$nfolds, seed = ModelPar$seed, .homonyms = "first")
   }
-  mod <- easy_call(cfhaz_ml_integral_est_cpp, args)
+  mod <- easy_call(driv_cf_ml_est_cpp, args)
   return(list(Coef = mod$x,
               Var = mod$var,
               Convergence = mod$Convergence))

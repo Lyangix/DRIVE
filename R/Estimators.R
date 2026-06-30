@@ -1,5 +1,5 @@
 # R wrappers around the compiled estimating-equation solvers in src/.
-# The compiled entry points driv_s_est() and integral_customized_est() are
+# The compiled entry points driv_s_est() and driv_cf_ml_est() are
 # made available through R/RcppExports.R (useDynLib).
 
 # Partition indices into `nfolds` cross-fitting groups.
@@ -53,7 +53,7 @@ driv_s_est_cpp <- function(init_parameters, time, event, IV,
 #'
 #' Cross-fits user-supplied machine-learning nuisance estimators for the
 #' propensity score and the conditional survival, then solves the compiled
-#' `integral_customized_est()` estimating equation.
+#' `driv_cf_ml_est()` estimating equation.
 #'
 #' @inheritParams driv_s_est_cpp
 #' @param ml_fitting_surv Function fitting the conditional survival; called as
@@ -64,7 +64,7 @@ driv_s_est_cpp <- function(init_parameters, time, event, IV,
 #' @param seed Random seed for fold assignment.
 #' @return A list with the estimate `x`, variance `var`, and `Convergence`.
 #' @export
-cfhaz_ml_integral_est_cpp <- function(init_parameters, time, event, IV,
+driv_cf_ml_est_cpp <- function(init_parameters, time, event, IV,
                                       Covariates, Covariates2, D_status, stime, ml_fitting_surv,
                                       ml_fitting_propensity,
                                       max_iter = 20, tol = 1e-5,
@@ -94,7 +94,7 @@ cfhaz_ml_integral_est_cpp <- function(init_parameters, time, event, IV,
     cf_surv[ind, ] <- out
   }
 
-  out <- integral_customized_est(0.1, time = time, event = event, IV = IV, IV_c = cf_IV_c,
+  out <- driv_cf_ml_est(0.1, time = time, event = event, IV = IV, IV_c = cf_IV_c,
                                  D_status = D_status, stime = stime,
                                  ConfoundingPart = cf_surv, max_iter = max_iter,
                                  tol = tol, contraction = contraction, eta = eta)

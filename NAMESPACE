@@ -32,7 +32,7 @@ export(Validate_method)
 
 # Estimating-equation wrappers
 export(driv_s_est_cpp)
-export(cfhaz_ml_integral_est_cpp)
+export(driv_cf_ml_est_cpp)
 export(expit)
 
 # Data-generating building blocks
