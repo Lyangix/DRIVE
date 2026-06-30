@@ -269,7 +269,7 @@ DataFitting.ModelPar.DRIV.s <- function(ModelPar) {
                              Covariates2 = ModelPar$Covariates2,
                              D_status = D_status, stime = stime)
   }
-  mod <- easy_call(integral2_est_cpp, args)
+  mod <- easy_call(driv_s_est_cpp, args)
   return(list(Coef = mod$x,
               Var = mod$var,
               Convergence = mod$Convergence,

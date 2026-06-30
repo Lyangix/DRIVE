@@ -1,5 +1,5 @@
 # R wrappers around the compiled estimating-equation solvers in src/.
-# The compiled entry points integral2_est() and integral_customized_est() are
+# The compiled entry points driv_s_est() and integral_customized_est() are
 # made available through R/RcppExports.R (useDynLib).
 
 # Partition indices into `nfolds` cross-fitting groups.
@@ -17,7 +17,7 @@ cf_group <- function(nfolds, datasize, seed) {
 
 #' DRIV.s estimating-equation solver (Newton with backtracking line search)
 #'
-#' Wraps the compiled `integral2_est()` solver. The instrument residual is formed
+#' Wraps the compiled `driv_s_est()` solver. The instrument residual is formed
 #' from a logistic propensity model of `IV` on `Covariates2`.
 #'
 #' @param init_parameters Initial parameter vector.
@@ -31,13 +31,13 @@ cf_group <- function(nfolds, datasize, seed) {
 #' @param max_iter,tol,contraction,eta Newton / line-search controls.
 #' @return A list with the estimate `x`, variance `var`, `Convergence`, and `stime`.
 #' @export
-integral2_est_cpp <- function(init_parameters, time, event, IV,
+driv_s_est_cpp <- function(init_parameters, time, event, IV,
                               Covariates, Covariates2, D_status, stime, max_iter = 50, tol = 1e-5,
                               contraction = 0.5, eta = 1e-4) {
   mod <- glm(IV ~ Covariates2, family = binomial(link = "logit"))
   IV_c <- IV - expit(predict(mod))
 
-  out <- integral2_est(init_parameters = init_parameters, time = time,
+  out <- driv_s_est(init_parameters = init_parameters, time = time,
                        event = event, IV = IV, IV_c = IV_c, Covariates = Covariates,
                        D_status = D_status, stime = stime, max_iter = max_iter,
                        tol = tol, contraction = contraction, eta = eta)
@@ -52,7 +52,7 @@ integral2_est_cpp <- function(init_parameters, time, event, IV,
 #' propensity score and the conditional survival, then solves the compiled
 #' `integral_customized_est()` estimating equation.
 #'
-#' @inheritParams integral2_est_cpp
+#' @inheritParams driv_s_est_cpp
 #' @param ml_fitting_surv Function fitting the conditional survival; called as
 #'   `ml_fitting_surv(train_list, predictx)`.
 #' @param ml_fitting_propensity Function fitting the propensity score; called as

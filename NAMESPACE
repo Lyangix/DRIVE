@@ -31,7 +31,7 @@ export(Validate_scenario)
 export(Validate_method)
 
 # Estimating-equation wrappers
-export(integral2_est_cpp)
+export(driv_s_est_cpp)
 export(cfhaz_ml_integral_est_cpp)
 export(expit)
 

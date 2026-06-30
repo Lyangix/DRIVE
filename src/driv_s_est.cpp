@@ -5,7 +5,7 @@ using namespace Rcpp;
 
 
 // [[Rcpp::export]]
-SEXP integral2_est(
+SEXP driv_s_est(
     arma::vec init_parameters,
     arma::vec time,
     arma::vec event,
