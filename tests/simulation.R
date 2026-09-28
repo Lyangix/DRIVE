@@ -47,11 +47,18 @@ stopifnot(!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE))
 invisible(SimulateData(N = 10))
 stopifnot(exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE))
 
-# The checked-in fixture is exactly reproducible and directly fits all of the
+# The checked-in fixture is reproducible across platforms and directly fits
 # estimators that do not require user-supplied machine-learning functions.
 data(drive_toy)
 RNGkind("Mersenne-Twister", "Inversion", "Rejection")
-stopifnot(identical(drive_toy, SimulateData(N = 200, seed = 2025)))
+regenerated_toy <- SimulateData(N = 200, seed = 2025)
+# Allow only tiny absolute rounding differences in derived times; sampled
+# covariates, treatment assignments and event indicators must match exactly.
+stopifnot(identical(drive_toy$Covariates, regenerated_toy$Covariates),
+          identical(drive_toy$Z, regenerated_toy$Z),
+          identical(drive_toy$event, regenerated_toy$event),
+          isTRUE(all.equal(drive_toy, regenerated_toy,
+                           tolerance = 1e-12, scale = 1)))
 set.seed(123)
 fits <- TRTSWE(drive_toy, max_t = 5,
                methods = c("ITT", "remove", "recensor", "TimeVar", "DRIVE.joint"))
