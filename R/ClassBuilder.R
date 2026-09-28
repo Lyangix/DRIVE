@@ -7,7 +7,8 @@
 #' @param N Sample size.
 #' @param p Number of measured covariates.
 #' @param p_U Number of unmeasured confounders.
-#' @param Scenario Either `"exogenous"` or `"endogenous"`.
+#' @param Scenario `"i"` (exogenous switching) or `"ii"` (endogenous switching).
+#'   The former names `"exogenous"` and `"endogenous"` remain accepted aliases.
 #' @param max_t Administrative censoring time.
 #' @param theta True treatment effect.
 #' @param unmeasured_Confounding,InitCovariates,InitAssignment,SurvTime,SwitchingTime,CensoringTime,TransferX
@@ -33,7 +34,7 @@ New_SimuArg <- function(nrep, N, p, p_U, Scenario, max_t, theta,
   stopifnot(is.function(SurvTime))
   stopifnot(is.function(SwitchingTime))
   stopifnot(is.function(CensoringTime))
-  Validate_scenario(Scenario)
+  Scenario <- normalize_scenario(Scenario)
   Control <- rlang::dots_list(!!!Control, json_save = FALSE, save_path = "",
                               Annotation = "", .homonyms = "first")
   data <- rlang::dots_list(initials = list(nrep = nrep, N = N, p = p, p_U = p_U,
@@ -70,18 +71,18 @@ New_ModelPar <- function(N, p, max_t, dat, method,
                                         tol = 1e-5,
                                         contraction = 0.5,
                                         eta = 1e-4,
-                                        init_parameters = runif(p + 1),
+                                        init_parameters = if (method[1] == "DRIVE.ML") 0.1 else runif(p + 1),
                                         learning_rate = 0.1),
                          ...)
 {
-  Validate_method(method)
+  method <- normalize_methods(method)
   Control <- rlang::dots_list(!!!Control, grid = 100,
                               max_iter = 20,
                               tol = 1e-5,
                               contraction = 0.5,
                               eta = 1e-4,
                               learning_rate = 0.1,
-                              init_parameters = runif(p + 1), .homonyms = "first")
+                              init_parameters = if (method[1] == "DRIVE.ML") 0.1 else runif(p + 1), .homonyms = "first")
   data <- rlang::dots_list(N = N, p = p, max_t = max_t, dat = dat, Control = Control,
                            !!!list(...), .homonyms = "first")
   structure(data, class = paste0("ModelPar.", method[1]))

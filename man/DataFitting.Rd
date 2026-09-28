@@ -6,8 +6,8 @@
 \alias{DataFitting.ModelPar.remove}
 \alias{DataFitting.ModelPar.recensor}
 \alias{DataFitting.ModelPar.TimeVar}
-\alias{DataFitting.ModelPar.DRIV.s}
-\alias{DataFitting.ModelPar.DRIV.cf.hz.ml.est}
+\alias{DataFitting.ModelPar.DRIVE.joint}
+\alias{DataFitting.ModelPar.DRIVE.ML}
 \title{Fit a treatment-switching model}
 \usage{
 DataFitting(ModelPar)
@@ -20,9 +20,9 @@ DataFitting(ModelPar)
 
 \method{DataFitting}{ModelPar.TimeVar}(ModelPar)
 
-\method{DataFitting}{ModelPar.DRIV.s}(ModelPar)
+\method{DataFitting}{ModelPar.DRIVE.joint}(ModelPar)
 
-\method{DataFitting}{ModelPar.DRIV.cf.hz.ml.est}(ModelPar)
+\method{DataFitting}{ModelPar.DRIVE.ML}(ModelPar)
 }
 \arguments{
 \item{ModelPar}{A `ModelPar` object from [New_ModelPar()].}
@@ -32,5 +32,6 @@ A list with at least `Coef` and `Var`.
 }
 \description{
 Generic that dispatches on the `ModelPar.<method>` class. Supported methods
-are `ITT`, `remove`, `recensor`, `TimeVar`, `DRIV.s` and `DRIV.cf.hz.ml.est`.
+are `ITT`, `remove`, `recensor`, `TimeVar`, `DRIVE.joint` and `DRIVE.ML`.
+See [DRIVE_ML] for the user-supplied learner interface.
 }

@@ -1,4 +1,5 @@
 ^scripts$
+^data-raw$
 ^tools$
 ^.*\.Rproj$
 ^\.Rproj\.user$

@@ -7,7 +7,8 @@
 Validate_scenario(x)
 }
 \arguments{
-\item{x}{Scenario label; must be one of `"exogenous"` or `"endogenous"`.}
+\item{x}{Scenario label: `"i"` (exogenous switching) or `"ii"` (endogenous
+switching). The old names `"exogenous"` and `"endogenous"` are aliases.}
 }
 \value{
 Invisibly `NULL`; called for its side effect of stopping on invalid input.

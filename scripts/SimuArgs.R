@@ -6,7 +6,7 @@ library(randomForestSRC)
 #####################          Scenario 1        ###############################
 ################################################################################
 
-SimuArg = New_SimuArg(nrep = 1000, N = 1600, p = 2, p_U = 1, Scenario = "exogenous", max_t = 5,
+SimuArg = New_SimuArg(nrep = 1000, N = 1600, p = 2, p_U = 1, Scenario = "i", max_t = 5,
                       theta = 0.1, 
                       unmeasured_Confounding = unmeasured_Confounding,
                       InitCovariates = InitCovariates,
@@ -24,7 +24,7 @@ SimuArg = New_SimuArg(nrep = 1000, N = 1600, p = 2, p_U = 1, Scenario = "exogeno
 # DataGenerating(SimuArg)
 
 
-SimuArg2 = New_SimuArg(nrep = 1000, N = 3200, p = 2, p_U = 1, Scenario = "exogenous", max_t = 5,
+SimuArg2 = New_SimuArg(nrep = 1000, N = 3200, p = 2, p_U = 1, Scenario = "i", max_t = 5,
                       theta = 0.1, 
                       unmeasured_Confounding = unmeasured_Confounding,
                       InitCovariates = InitCovariates,
@@ -42,7 +42,7 @@ SimuArg2 = New_SimuArg(nrep = 1000, N = 3200, p = 2, p_U = 1, Scenario = "exogen
 # DataGenerating(SimuArg2)
 
 
-SimuArg_prop = New_SimuArg(nrep = 1000, N = 1600, p = 2, p_U = 1, Scenario = "exogenous", max_t = 5,
+SimuArg_prop = New_SimuArg(nrep = 1000, N = 1600, p = 2, p_U = 1, Scenario = "i", max_t = 5,
                            theta = 0.1, 
                            unmeasured_Confounding = unmeasured_Confounding,
                            InitCovariates = InitCovariates,
@@ -61,7 +61,7 @@ SimuArg_prop = New_SimuArg(nrep = 1000, N = 1600, p = 2, p_U = 1, Scenario = "ex
 # DataGenerating(SimuArg_prop)
 
 
-SimuArg2_prop = New_SimuArg(nrep = 1000, N = 3200, p = 2, p_U = 1, Scenario = "exogenous", max_t = 5,
+SimuArg2_prop = New_SimuArg(nrep = 1000, N = 3200, p = 2, p_U = 1, Scenario = "i", max_t = 5,
                            theta = 0.1, 
                            unmeasured_Confounding = unmeasured_Confounding,
                            InitCovariates = InitCovariates,
@@ -83,7 +83,7 @@ SimuArg2_prop = New_SimuArg(nrep = 1000, N = 3200, p = 2, p_U = 1, Scenario = "e
 
 
 
-SimuArg_Surv = New_SimuArg(nrep = 1000, N = 1600, p = 2, p_U = 1, Scenario = "exogenous", max_t = 5,
+SimuArg_Surv = New_SimuArg(nrep = 1000, N = 1600, p = 2, p_U = 1, Scenario = "i", max_t = 5,
                            theta = 0.1, 
                            unmeasured_Confounding = unmeasured_Confounding,
                            InitCovariates = InitCovariates,
@@ -102,7 +102,7 @@ SimuArg_Surv = New_SimuArg(nrep = 1000, N = 1600, p = 2, p_U = 1, Scenario = "ex
 # DataGenerating(SimuArg_Surv)
 
 
-SimuArg2_Surv = New_SimuArg(nrep = 1000, N = 3200, p = 2, p_U = 1, Scenario = "exogenous", max_t = 5,
+SimuArg2_Surv = New_SimuArg(nrep = 1000, N = 3200, p = 2, p_U = 1, Scenario = "i", max_t = 5,
                            theta = 0.1, 
                            unmeasured_Confounding = unmeasured_Confounding,
                            InitCovariates = InitCovariates,
@@ -123,7 +123,7 @@ SimuArg2_Surv = New_SimuArg(nrep = 1000, N = 3200, p = 2, p_U = 1, Scenario = "e
 
 
 
-SimuArg_both = New_SimuArg(nrep = 1000, N = 1600, p = 2, p_U = 1, Scenario = "exogenous", max_t = 5,
+SimuArg_both = New_SimuArg(nrep = 1000, N = 1600, p = 2, p_U = 1, Scenario = "i", max_t = 5,
                            theta = 0.1, 
                            unmeasured_Confounding = unmeasured_Confounding,
                            InitCovariates = InitCovariates,
@@ -142,7 +142,7 @@ SimuArg_both = New_SimuArg(nrep = 1000, N = 1600, p = 2, p_U = 1, Scenario = "ex
 # DataGenerating(SimuArg_both)
 
 
-SimuArg2_both = New_SimuArg(nrep = 1000, N = 3200, p = 2, p_U = 1, Scenario = "exogenous", max_t = 5,
+SimuArg2_both = New_SimuArg(nrep = 1000, N = 3200, p = 2, p_U = 1, Scenario = "i", max_t = 5,
                            theta = 0.1, 
                            unmeasured_Confounding = unmeasured_Confounding,
                            InitCovariates = InitCovariates,
@@ -168,7 +168,7 @@ SimuArg2_both = New_SimuArg(nrep = 1000, N = 3200, p = 2, p_U = 1, Scenario = "e
 ################################################################################
 
 
-SimuArg_dep = New_SimuArg(nrep = 1000, N = 1600, p = 2, p_U = 1, Scenario = "endogenous", max_t = 5,
+SimuArg_dep = New_SimuArg(nrep = 1000, N = 1600, p = 2, p_U = 1, Scenario = "ii", max_t = 5,
                       theta = 0.1, 
                       unmeasured_Confounding = unmeasured_Confounding,
                       InitCovariates = InitCovariates,
@@ -187,7 +187,7 @@ SimuArg_dep = New_SimuArg(nrep = 1000, N = 1600, p = 2, p_U = 1, Scenario = "end
 # DataGenerating(SimuArg_dep)
 
 
-SimuArg2_dep = New_SimuArg(nrep = 1000, N = 3200, p = 2, p_U = 1, Scenario = "endogenous", max_t = 5,
+SimuArg2_dep = New_SimuArg(nrep = 1000, N = 3200, p = 2, p_U = 1, Scenario = "ii", max_t = 5,
                           theta = 0.1, 
                           unmeasured_Confounding = unmeasured_Confounding,
                           InitCovariates = InitCovariates,
@@ -208,7 +208,7 @@ SimuArg2_dep = New_SimuArg(nrep = 1000, N = 3200, p = 2, p_U = 1, Scenario = "en
 
 
 
-SimuArg_dep_prop = New_SimuArg(nrep = 1000, N = 1600, p = 2, p_U = 1, Scenario = "endogenous", max_t = 5,
+SimuArg_dep_prop = New_SimuArg(nrep = 1000, N = 1600, p = 2, p_U = 1, Scenario = "ii", max_t = 5,
                           theta = 0.1, 
                           unmeasured_Confounding = unmeasured_Confounding,
                           InitCovariates = InitCovariates,
@@ -227,7 +227,7 @@ SimuArg_dep_prop = New_SimuArg(nrep = 1000, N = 1600, p = 2, p_U = 1, Scenario =
 # DataGenerating(SimuArg_dep_prop)
 
 
-SimuArg2_dep_prop = New_SimuArg(nrep = 1000, N = 3200, p = 2, p_U = 1, Scenario = "endogenous", max_t = 5,
+SimuArg2_dep_prop = New_SimuArg(nrep = 1000, N = 3200, p = 2, p_U = 1, Scenario = "ii", max_t = 5,
                            theta = 0.1, 
                            unmeasured_Confounding = unmeasured_Confounding,
                            InitCovariates = InitCovariates,
@@ -246,7 +246,7 @@ SimuArg2_dep_prop = New_SimuArg(nrep = 1000, N = 3200, p = 2, p_U = 1, Scenario 
 # DataGenerating(SimuArg2_dep_prop)
 
 
-SimuArg_dep_surv = New_SimuArg(nrep = 1000, N = 1600, p = 2, p_U = 1, Scenario = "endogenous", max_t = 5,
+SimuArg_dep_surv = New_SimuArg(nrep = 1000, N = 1600, p = 2, p_U = 1, Scenario = "ii", max_t = 5,
                           theta = 0.1, 
                           unmeasured_Confounding = unmeasured_Confounding,
                           InitCovariates = InitCovariates,
@@ -265,7 +265,7 @@ SimuArg_dep_surv = New_SimuArg(nrep = 1000, N = 1600, p = 2, p_U = 1, Scenario =
 # DataGenerating(SimuArg_dep_surv)
 
 
-SimuArg2_dep_surv = New_SimuArg(nrep = 1000, N = 3200, p = 2, p_U = 1, Scenario = "endogenous", max_t = 5,
+SimuArg2_dep_surv = New_SimuArg(nrep = 1000, N = 3200, p = 2, p_U = 1, Scenario = "ii", max_t = 5,
                            theta = 0.1, 
                            unmeasured_Confounding = unmeasured_Confounding,
                            InitCovariates = InitCovariates,
@@ -284,7 +284,7 @@ SimuArg2_dep_surv = New_SimuArg(nrep = 1000, N = 3200, p = 2, p_U = 1, Scenario 
 # DataGenerating(SimuArg2_dep_surv)
 
 
-SimuArg_dep_both = New_SimuArg(nrep = 1000, N = 1600, p = 2, p_U = 1, Scenario = "endogenous", max_t = 5,
+SimuArg_dep_both = New_SimuArg(nrep = 1000, N = 1600, p = 2, p_U = 1, Scenario = "ii", max_t = 5,
                                theta = 0.1, 
                                unmeasured_Confounding = unmeasured_Confounding,
                                InitCovariates = InitCovariates,
@@ -303,7 +303,7 @@ SimuArg_dep_both = New_SimuArg(nrep = 1000, N = 1600, p = 2, p_U = 1, Scenario =
 # DataGenerating(SimuArg_dep_both)
 
 
-SimuArg2_dep_both = New_SimuArg(nrep = 1000, N = 3200, p = 2, p_U = 1, Scenario = "endogenous", max_t = 5,
+SimuArg2_dep_both = New_SimuArg(nrep = 1000, N = 3200, p = 2, p_U = 1, Scenario = "ii", max_t = 5,
                                 theta = 0.1, 
                                 unmeasured_Confounding = unmeasured_Confounding,
                                 InitCovariates = InitCovariates,
@@ -455,17 +455,20 @@ ml_fitting_propensity_logit = function(data, predictx){
 
 
 
+# Use the installed, documented callbacks for the runnable example below.
+source(system.file("examples", "drive_ml_learners.R", package = "DRIVE"))
+
 # Example: generate data then run the focus methods on a few replicates.
 # DataGenerating(SimuArg)   # writes DataGenerated/<N><Annotation>/<rep>.json
 trial = SimuRun(SimuArg,
                 methods = c("ITT", "remove", "recensor", "TimeVar",
-                            "DRIV.s", "DRIV.cf.hz.ml.est"),
-                ml_fitting_surv = ml_fitting_rfsrc2,
-                ml_fitting_propensity = ml_fitting_propensity_logit,
+                            "DRIVE.joint", "DRIVE.ML"),
+                ml_fitting_surv = ml_survival_forest,
+                ml_fitting_propensity = ml_propensity_tree,
                 sequence = 1:2, nfolds = 5)
 trial
 
-# trial2 = SimuRun_rateCal(SimuArg_KangSchafer, methods = c("DRIV.cf.hz.ml.est.rateCal"),
+# trial2 = SimuRun_rateCal(SimuArg_KangSchafer, methods = c("DRIVE.ML.rateCal"),
 #                         rate = seq(0, 1, by = 0.2),
 #                         ml_fitting_surv = ml_fitting_rfsrc2,
 #                         ml_fitting_propensity = ml_fitting_propensity_logit,
@@ -473,7 +476,7 @@ trial
 #                         ml_fitting_propensity_true = ml_fitting_propensity_true, 
 #                         sequence = 10:20)
 # 
-# trial3 = SimuRun_rateCal(SimuArg_KangSchafer, methods = c("DRIV.cf.hz.ml.est.rateCal"),
+# trial3 = SimuRun_rateCal(SimuArg_KangSchafer, methods = c("DRIVE.ML.rateCal"),
 #                          rate = seq(0, 1, by = 0.2),
 #                          ml_fitting_surv = ml_fitting_rfsrc2,
 #                          ml_fitting_propensity = ml_fitting_propensity_logit,
@@ -481,14 +484,14 @@ trial
 #                          ml_fitting_propensity_true = ml_fitting_propensity_true, 
 #                          sequence = 20:30)
 # 
-# trial4 = SimuRun_rateCal(SimuArg_KangSchafer, methods = c("DRIV.cf.hz.ml.est.rateCal"),
+# trial4 = SimuRun_rateCal(SimuArg_KangSchafer, methods = c("DRIVE.ML.rateCal"),
 #                          rate = seq(0, 1, by = 0.2),
 #                          ml_fitting_surv = ml_fitting_rfsrc2,
 #                          ml_fitting_propensity = ml_fitting_propensity_logit,
 #                          ml_fitting_surv_true = ml_fitting_surv_true,
 #                          ml_fitting_propensity_true = ml_fitting_propensity_true, 
 #                          sequence = 30:40)
-# trial5 = SimuRun_rateCal(SimuArg_KangSchafer, methods = c("DRIV.cf.hz.ml.est.rateCal"),
+# trial5 = SimuRun_rateCal(SimuArg_KangSchafer, methods = c("DRIVE.ML.rateCal"),
 #                          rate = seq(0, 1, by = 0.2),
 #                          ml_fitting_surv = ml_fitting_rfsrc2,
 #                          ml_fitting_propensity = ml_fitting_propensity_logit,

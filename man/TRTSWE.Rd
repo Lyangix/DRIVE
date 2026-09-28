@@ -7,21 +7,26 @@
 TRTSWE(dat, max_t, methods, Control = list(), ...)
 }
 \arguments{
-\item{dat}{A list with the observed data (`Covariates`, `Z`, `W`, `T_D_c`,
-`event`, and optionally `stime`, `D_status`, `Covariates2`).}
+\item{dat}{A list with the observed data (\code{Covariates}, \code{Z}, \code{W}, \code{T_D_c},
+\code{event}, and optionally \code{stime}, \code{D_status}, \code{Covariates2}).}
 
 \item{max_t}{Administrative censoring time.}
 
-\item{methods}{Character vector of method names (see [Validate_method()]).}
+\item{methods}{Character vector of method names (see \code{\link[=Validate_method]{Validate_method()}}).}
 
-\item{Control}{List of estimation controls passed to [New_ModelPar()].}
+\item{Control}{List of estimation controls passed to \code{\link[=New_ModelPar]{New_ModelPar()}}.}
 
-\item{...}{Additional arguments forwarded to [New_ModelPar()].}
+\item{...}{Additional arguments forwarded to \code{\link[=New_ModelPar]{New_ModelPar()}}. For
+\code{DRIVE.ML}, supply \code{ml_fitting_surv}, \code{ml_fitting_propensity}, and optionally
+\code{nfolds} and \code{seed}; see \link{DRIVE_ML} for the callback interface.}
 }
 \value{
-A `TRTSWE` object.
+A \code{TRTSWE} object.
 }
 \description{
-Applies each requested method to one observed dataset and returns a `TRTSWE`
+Applies each requested method to one observed dataset and returns a \code{TRTSWE}
 object holding the per-method estimates.
+}
+\seealso{
+\link{DRIVE_ML}
 }

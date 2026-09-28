@@ -8,8 +8,9 @@ Validate_method(x)
 }
 \arguments{
 \item{x}{Character vector of method names. Supported methods are
-`"ITT"`, `"remove"`, `"recensor"`, `"TimeVar"`, `"DRIV.s"` and
-`"DRIV.cf.hz.ml.est"`.}
+`"ITT"`, `"remove"`, `"recensor"`, `"TimeVar"`, `"DRIVE.joint"` and
+`"DRIVE.ML"`. `"DRIV.s"` and `"DRIV.cf.hz.ml.est"` remain accepted aliases
+for the joint and ML estimators, respectively.}
 }
 \value{
 Invisibly `NULL`; called for its side effect of stopping on invalid input.

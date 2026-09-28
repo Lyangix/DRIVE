@@ -2,23 +2,45 @@
 % Please edit documentation in R/Generic.R
 \name{DataGenerating}
 \alias{DataGenerating}
-\alias{DataGenerating.SimuArg.exogenous}
-\alias{DataGenerating.SimuArg.endogenous}
+\alias{DataGenerating.SimuArg.i}
+\alias{DataGenerating.SimuArg.ii}
 \title{Generate simulation data}
 \usage{
-DataGenerating(SimuArg)
+DataGenerating(SimuArg, return_data = FALSE)
 
-\method{DataGenerating}{SimuArg.exogenous}(SimuArg)
+\method{DataGenerating}{SimuArg.i}(SimuArg, return_data = FALSE)
 
-\method{DataGenerating}{SimuArg.endogenous}(SimuArg)
+\method{DataGenerating}{SimuArg.ii}(SimuArg, return_data = FALSE)
 }
 \arguments{
-\item{SimuArg}{A `SimuArg` object from [New_SimuArg()].}
+\item{SimuArg}{A simulation argument object from \code{\link[=New_SimuArg]{New_SimuArg()}} or
+\code{\link[=New_SimuScenario]{New_SimuScenario()}}.}
+
+\item{return_data}{Logical; return datasets as well as summary rates?}
 }
 \value{
-A list of summary rates (treatment proportion, switching, censoring).
+With \code{return_data = FALSE}, a list of mean treatment, switching and
+censoring rates, plus \code{anyNegetive} (legacy spelling), the total number of
+negative switching draws across replicates. With \code{return_data = TRUE}, a
+list with \code{summary} and \code{data} (one dataset per replicate). Each in-memory
+dataset contains only measured \code{Covariates}; unmeasured covariates are in
+\code{U}. Latent \code{T_D}, \code{T_0}, and \code{C} are retained for simulation diagnostics.
 }
 \description{
-Generic that dispatches on the `SimuArg.<Scenario>` class to generate (and
-optionally save) replicate datasets and return summary rates.
+Generate replicate datasets using the supplied building blocks. By default,
+return the original summary rates; optionally retain datasets in memory.
+}
+\details{
+\code{Control$json_save = TRUE} also saves datasets under
+\code{file.path(save_path, "DataGenerated", paste0(N, Annotation))}.
+For compatibility, saved JSON files retain the original layout with measured
+and unmeasured covariates together; \code{\link[=SimuRun]{SimuRun()}} removes the unmeasured columns.
+\code{adcensoring_rate} retains the original definition \code{mean(T_D > max_t)},
+regardless of whether random censoring occurs first.
+}
+\examples{
+set.seed(123)
+generated <- DataGenerating(New_SimuScenario(N = 100), return_data = TRUE)
+generated$summary
+head(generated$data[[1]]$Covariates)
 }

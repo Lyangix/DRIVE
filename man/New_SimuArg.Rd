@@ -32,7 +32,8 @@ New_SimuArg(
 
 \item{p_U}{Number of unmeasured confounders.}
 
-\item{Scenario}{Either `"exogenous"` or `"endogenous"`.}
+\item{Scenario}{`"i"` (exogenous switching) or `"ii"` (endogenous switching).
+The former names `"exogenous"` and `"endogenous"` remain accepted aliases.}
 
 \item{max_t}{Administrative censoring time.}
 

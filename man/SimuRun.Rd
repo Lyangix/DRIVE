@@ -9,25 +9,34 @@ SimuRun(
   methods,
   Control = list(grid = 100, max_iter = 20, tol = 1e-05, contraction = 0.5, eta = 1e-04),
   sequence = NULL,
-  ...
+  ...,
+  data = NULL
 )
 }
 \arguments{
-\item{SimuArg}{A `SimuArg` object from [New_SimuArg()].}
+\item{SimuArg}{A \code{SimuArg} object from \code{\link[=New_SimuArg]{New_SimuArg()}}.}
 
-\item{methods}{Character vector of method names (see [Validate_method()]).}
+\item{methods}{Character vector of method names (see \code{\link[=Validate_method]{Validate_method()}}).}
 
-\item{Control}{List of estimation controls passed to [New_ModelPar()].}
+\item{Control}{List of estimation controls passed to \code{\link[=New_ModelPar]{New_ModelPar()}}.}
 
-\item{sequence}{Optional integer vector of replicate indices; defaults to all.}
+\item{sequence}{Optional integer vector of replicate indices; defaults to all.
+Unselected replicates are stored as \code{NA}.}
 
-\item{...}{Additional arguments forwarded to [New_ModelPar()]
-(e.g. `ml_fitting_surv`, `ml_fitting_propensity`).}
+\item{...}{Additional arguments forwarded to \code{\link[=New_ModelPar]{New_ModelPar()}}
+(e.g. \code{ml_fitting_surv}, \code{ml_fitting_propensity}, \code{nfolds}, \code{seed}).
+See \link{DRIVE_ML} for the ML callback interface.}
+
+\item{data}{Optional list of replicate datasets, such as the \code{data} component
+returned by \code{DataGenerating(SimuArg, return_data = TRUE)}. Must have \code{nrep}
+entries. When omitted, read JSON files if \code{Control$json_save} in \code{SimuArg}
+is \code{TRUE}; otherwise generate replicates in memory.}
 }
 \value{
-A `SimuResults` object.
+A \code{SimuResults} object.
 }
 \description{
-Reads previously generated replicate datasets and fits each requested method,
-collecting coefficients and variances into a `SimuResults` object.
+Generate replicates in memory, use supplied datasets, or read previously
+saved JSON datasets, then fit each requested method,
+collecting coefficients and variances into a \code{SimuResults} object.
 }

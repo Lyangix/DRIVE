@@ -1,151 +1,57 @@
 #' Generate simulation data
 #'
-#' Generic that dispatches on the `SimuArg.<Scenario>` class to generate (and
-#' optionally save) replicate datasets and return summary rates.
+#' Generate replicate datasets using the supplied building blocks. By default,
+#' return the original summary rates; optionally retain datasets in memory.
 #'
-#' @param SimuArg A `SimuArg` object from [New_SimuArg()].
-#' @return A list of summary rates (treatment proportion, switching, censoring).
+#' @param SimuArg A simulation argument object from [New_SimuArg()] or
+#'   [New_SimuScenario()].
+#' @param return_data Logical; return datasets as well as summary rates?
+#' @return With `return_data = FALSE`, a list of mean treatment, switching and
+#'   censoring rates, plus `anyNegetive` (legacy spelling), the total number of
+#'   negative switching draws across replicates. With `return_data = TRUE`, a
+#'   list with `summary` and `data` (one dataset per replicate). Each in-memory
+#'   dataset contains only measured `Covariates`; unmeasured covariates are in
+#'   `U`. Latent `T_D`, `T_0`, and `C` are retained for simulation diagnostics.
+#' @details
+#' `Control$json_save = TRUE` also saves datasets under
+#' `file.path(save_path, "DataGenerated", paste0(N, Annotation))`.
+#' For compatibility, saved JSON files retain the original layout with measured
+#' and unmeasured covariates together; [SimuRun()] removes the unmeasured columns.
+#' `adcensoring_rate` retains the original definition `mean(T_D > max_t)`,
+#' regardless of whether random censoring occurs first.
+#' @examples
+#' set.seed(123)
+#' generated <- DataGenerating(New_SimuScenario(N = 100), return_data = TRUE)
+#' generated$summary
+#' head(generated$data[[1]]$Covariates)
+#' @md
 #' @export
-DataGenerating <- function(SimuArg) {
+DataGenerating <- function(SimuArg, return_data = FALSE) {
   UseMethod("DataGenerating")
 }
 
+#' @rdname DataGenerating
+#' @export
+DataGenerating.SimuArg.i <- function(SimuArg, return_data = FALSE) {
+  generate_simulation(SimuArg, return_data, endogenous = FALSE)
+}
 
 #' @rdname DataGenerating
 #' @export
-DataGenerating.SimuArg.exogenous <- function(SimuArg) {
-  args <- rlang::dots_list(!!!SimuArg$parameters, !!!SimuArg$initials)
-  Z_proportion <- NULL
-  switching_rate_overall <- NULL
-  switching_rate_from_0 <- NULL
-  switching_rate_from_1 <- NULL
-  censoring_rate <- NULL
-  adcensoring_rate <- NULL
-  for (kk in 1:SimuArg$initials$nrep) {
-    Covariates <- easy_call(SimuArg$InitCovariates, rlang::dots_list(!!!args, unmeasured_Confounding = SimuArg$unmeasured_Confounding))
-    Z <- easy_call(SimuArg$InitAssignment, rlang::dots_list(!!!args, Covariates = Covariates))
-    W <- easy_call(SimuArg$SwitchingTime, rlang::dots_list(!!!args, Covariates = Covariates, Z = Z))
-    T <- easy_call(SimuArg$SurvTime, rlang::dots_list(!!!args, Covariates = Covariates, W = W, Z = Z))
-    T_D <- T$T_D
-    T_0 <- T$T_0
-    C <- easy_call(SimuArg$CensoringTime, rlang::dots_list(!!!args, Covariates = Covariates))
-    T_D_c <- ifelse(T_D <= C, T_D, C)
-    T_D_c <- ifelse(T_D_c <= args$max_t, T_D_c, args$max_t)
-    event <- T_D <= C & T_D <= args$max_t
-    W_copy <- W
-    W[W < 0] <- Inf
-    if (any(T_D <= 0)) warning("Negative time-to-event outcome occurs")
-    data <- list(Covariates = Covariates,
-                 Z = Z,
-                 W = W,
-                 T_D_c = T_D_c,
-                 T_D = T_D,
-                 T_0 = T_0,
-                 C = C,
-                 event = event)
-    if (SimuArg$Control$json_save) {
-      if (!dir.exists(paste0(SimuArg$Control$save_path, "DataGenerated"))) {
-        dir.create(paste0(SimuArg$Control$save_path, "DataGenerated"))
-      }
-      if (!dir.exists(paste0(SimuArg$Control$save_path, "DataGenerated/",
-                             SimuArg$initials$N, SimuArg$Control$Annotation))) {
-        dir.create(paste0(SimuArg$Control$save_path, "DataGenerated/",
-                          SimuArg$initials$N, SimuArg$Control$Annotation))
-      }
-      jsonlite::write_json(data, paste0(SimuArg$Control$save_path, "DataGenerated/",
-                                        SimuArg$initials$N, SimuArg$Control$Annotation,
-                                        "/", kk, ".json"))
-    }
-    T_D_c <- ifelse(T_D <= C, T_D, C)
-    T_D_c <- ifelse(T_D_c <= args$max_t, T_D_c, args$max_t)
-    event <- T_D <= args$max_t & T_D <= C
-    Z_proportion <- c(Z_proportion, mean(Z))
-    switching_rate_overall <- c(switching_rate_overall, mean(T_D_c > W))
-    switching_rate_from_0 <- c(switching_rate_from_0, mean((T_D_c > W)[Z == 0]))
-    switching_rate_from_1 <- c(switching_rate_from_1, mean((T_D_c > W)[Z == 1]))
-    censoring_rate <- c(censoring_rate, mean(1 - event))
-    adcensoring_rate <- c(adcensoring_rate, mean(T_D > args$max_t))
-  }
-  list(Z_proportion = mean(Z_proportion),
-       switching_rate_overall = mean(switching_rate_overall),
-       switching_rate_from_0 = mean(switching_rate_from_0),
-       switching_rate_from_1 = mean(switching_rate_from_1),
-       censoring_rate = mean(censoring_rate),
-       adcensoring_rate = mean(adcensoring_rate),
-       anyNegetive = sum(W_copy < 0))
+DataGenerating.SimuArg.ii <- function(SimuArg, return_data = FALSE) {
+  generate_simulation(SimuArg, return_data, endogenous = TRUE)
 }
 
-
-#' @rdname DataGenerating
-#' @export
-DataGenerating.SimuArg.endogenous <- function(SimuArg) {
-  args <- rlang::dots_list(!!!SimuArg$parameters, !!!SimuArg$initials)
-  Z_proportion <- NULL
-  switching_rate_overall <- NULL
-  switching_rate_from_0 <- NULL
-  switching_rate_from_1 <- NULL
-  censoring_rate <- NULL
-  adcensoring_rate <- NULL
-  for (kk in 1:SimuArg$initials$nrep) {
-    Covariates <- easy_call(SimuArg$InitCovariates, rlang::dots_list(!!!args, unmeasured_Confounding = SimuArg$unmeasured_Confounding))
-    Z <- easy_call(SimuArg$InitAssignment, rlang::dots_list(!!!args, Covariates = Covariates))
-    T <- rexp(args$N)
-    W <- easy_call(SimuArg$SwitchingTime, rlang::dots_list(!!!args, Covariates = Covariates, Z = Z, T = T))
-    T <- easy_call(SimuArg$SurvTime, rlang::dots_list(!!!args, Covariates = Covariates, W = W, Z = Z, T = T))
-    T_D <- T$T_D
-    T_0 <- T$T_0
-    C <- easy_call(SimuArg$CensoringTime, rlang::dots_list(!!!args, Covariates = Covariates))
-    T_D_c <- ifelse(T_D <= C, T_D, C)
-    T_D_c <- ifelse(T_D_c <= args$max_t, T_D_c, args$max_t)
-    event <- T_D <= C & T_D <= args$max_t
-    W_copy <- W
-    W[W < 0] <- Inf
-    if (any(T_D <= 0)) warning("Negative time-to-event outcome occurs")
-    data <- list(Covariates = Covariates,
-                 Z = Z,
-                 W = W,
-                 T_D_c = T_D_c,
-                 T_D = T_D,
-                 T_0 = T_0,
-                 C = C,
-                 event = event)
-    if (SimuArg$Control$json_save) {
-      if (!dir.exists(paste0(SimuArg$Control$save_path, "DataGenerated"))) {
-        dir.create(paste0(SimuArg$Control$save_path, "DataGenerated"))
-      }
-      if (!dir.exists(paste0(SimuArg$Control$save_path, "DataGenerated/",
-                             SimuArg$initials$N, SimuArg$Control$Annotation))) {
-        dir.create(paste0(SimuArg$Control$save_path, "DataGenerated/",
-                          SimuArg$initials$N, SimuArg$Control$Annotation))
-      }
-      jsonlite::write_json(data, paste0(SimuArg$Control$save_path, "DataGenerated/",
-                                        SimuArg$initials$N, SimuArg$Control$Annotation,
-                                        "/", kk, ".json"))
-    }
-    T_D_c <- ifelse(T_D <= C, T_D, C)
-    T_D_c <- ifelse(T_D_c <= args$max_t, T_D_c, args$max_t)
-    event <- T_D <= args$max_t & T_D <= C
-    Z_proportion <- c(Z_proportion, mean(Z))
-    switching_rate_overall <- c(switching_rate_overall, mean(T_D_c > W))
-    switching_rate_from_0 <- c(switching_rate_from_0, mean((T_D_c > W)[Z == 0]))
-    switching_rate_from_1 <- c(switching_rate_from_1, mean((T_D_c > W)[Z == 1]))
-    censoring_rate <- c(censoring_rate, mean(1 - event))
-    adcensoring_rate <- c(adcensoring_rate, mean(T_D > args$max_t))
-  }
-  list(Z_proportion = mean(Z_proportion),
-       switching_rate_overall = mean(switching_rate_overall),
-       switching_rate_from_0 = mean(switching_rate_from_0),
-       switching_rate_from_1 = mean(switching_rate_from_1),
-       censoring_rate = mean(censoring_rate),
-       adcensoring_rate = mean(adcensoring_rate),
-       anyNegetive = sum(W_copy < 0))
-}
+# Compatibility for previously saved simulation argument objects.
+DataGenerating.SimuArg.exogenous <- DataGenerating.SimuArg.i
+DataGenerating.SimuArg.endogenous <- DataGenerating.SimuArg.ii
 
 
 #' Fit a treatment-switching model
 #'
 #' Generic that dispatches on the `ModelPar.<method>` class. Supported methods
-#' are `ITT`, `remove`, `recensor`, `TimeVar`, `DRIV.s` and `DRIV.cf.hz.ml.est`.
+#' are `ITT`, `remove`, `recensor`, `TimeVar`, `DRIVE.joint` and `DRIVE.ML`.
+#' See [DRIVE_ML] for the user-supplied learner interface.
 #'
 #' @param ModelPar A `ModelPar` object from [New_ModelPar()].
 #' @return A list with at least `Coef` and `Var`.
@@ -200,6 +106,10 @@ DataFitting.ModelPar.recensor <- function(ModelPar) {
 #' @rdname DataFitting
 #' @export
 DataFitting.ModelPar.TimeVar <- function(ModelPar) {
+  # The formula is evaluated in this environment, including in a clean session
+  # where survival has been loaded as a dependency but has not been attached.
+  Surv <- survival::Surv
+  const <- timereg::const
   event <- ModelPar$dat$event
   event_w <- ModelPar$dat$T_D_c > ModelPar$dat$W
   p <- ncol(ModelPar$dat$Covariates)
@@ -231,7 +141,7 @@ DataFitting.ModelPar.TimeVar <- function(ModelPar) {
 
 #' @rdname DataFitting
 #' @export
-DataFitting.ModelPar.DRIV.s <- function(ModelPar) {
+DataFitting.ModelPar.DRIVE.joint <- function(ModelPar) {
   ModelPar$Control <- rlang::dots_list(!!!ModelPar$Control,
                                        init_parameters = rep(0, ncol(ModelPar$dat$Covariates) + 1),
                                        .homonyms = "first")
@@ -258,7 +168,8 @@ DataFitting.ModelPar.DRIV.s <- function(ModelPar) {
     D_status <- ModelPar$dat$D_status
   }
 
-  if (!("Covariates2" %in% names(ModelPar))) {
+  if (is.null(ModelPar$Covariates2)) ModelPar$Covariates2 <- ModelPar$dat$Covariates2
+  if (is.null(ModelPar$Covariates2)) {
     args <- rlang::dots_list(!!!ModelPar$Control, time = T_D_c, event = event,
                              IV = ModelPar$dat$Z, Covariates = ModelPar$dat$Covariates,
                              Covariates2 = ModelPar$dat$Covariates,
@@ -269,7 +180,7 @@ DataFitting.ModelPar.DRIV.s <- function(ModelPar) {
                              Covariates2 = ModelPar$Covariates2,
                              D_status = D_status, stime = stime)
   }
-  mod <- easy_call(driv_s_est_cpp, args)
+  mod <- easy_call(drive_joint_est_cpp, args)
   return(list(Coef = mod$x,
               Var = mod$var,            # joint semi-parametric sandwich variance
               Convergence = mod$Convergence,
@@ -279,7 +190,7 @@ DataFitting.ModelPar.DRIV.s <- function(ModelPar) {
 
 #' @rdname DataFitting
 #' @export
-DataFitting.ModelPar.DRIV.cf.hz.ml.est <- function(ModelPar) {
+DataFitting.ModelPar.DRIVE.ML <- function(ModelPar) {
   event <- ModelPar$dat$event
   T_D_c <- ModelPar$dat$T_D_c
   if (is.null(ModelPar$dat$stime)) {
@@ -303,12 +214,13 @@ DataFitting.ModelPar.DRIV.cf.hz.ml.est <- function(ModelPar) {
     D_status <- ModelPar$dat$D_status
   }
 
-  if (is.null(ModelPar$ml_fitting_surv)) stop("ml_fitting_surv is not specified")
-  if (is.null(ModelPar$ml_fitting_propensity)) stop("ml_fitting_propensity is not specified")
+  if (!is.function(ModelPar$ml_fitting_surv)) stop("DRIVE.ML requires ml_fitting_surv; see ?DRIVE_ML.")
+  if (!is.function(ModelPar$ml_fitting_propensity)) stop("DRIVE.ML requires ml_fitting_propensity; see ?DRIVE_ML.")
   if (is.null(ModelPar$nfolds)) ModelPar$nfolds <- 10
   if (is.null(ModelPar$seed)) ModelPar$seed <- 5884419
 
-  if (!("Covariates2" %in% names(ModelPar))) {
+  if (is.null(ModelPar$Covariates2)) ModelPar$Covariates2 <- ModelPar$dat$Covariates2
+  if (is.null(ModelPar$Covariates2)) {
     args <- rlang::dots_list(!!!ModelPar$Control, time = T_D_c, event = event,
                              IV = ModelPar$dat$Z, Covariates = ModelPar$dat$Covariates,
                              ml_fitting_surv = ModelPar$ml_fitting_surv,
@@ -323,14 +235,19 @@ DataFitting.ModelPar.DRIV.cf.hz.ml.est <- function(ModelPar) {
                              Covariates2 = ModelPar$Covariates2,
                              D_status = D_status, stime = stime, nfolds = ModelPar$nfolds, seed = ModelPar$seed, .homonyms = "first")
   }
-  mod <- easy_call(driv_cf_ml_est_cpp, args)
+  mod <- do.call(drive_ml_est_cpp, arg_filter(args, drive_ml_est_cpp))
   return(list(Coef = mod$x,
               Var = mod$var,
               Convergence = mod$Convergence))
 }
 
+# Compatibility for previously saved model objects.
+DataFitting.ModelPar.DRIV.s <- DataFitting.ModelPar.DRIVE.joint
+DataFitting.ModelPar.DRIV.cf.hz.ml.est <- DataFitting.ModelPar.DRIVE.ML
+
 
 #' Print simulation results
+#' @method print SimuResults
 #' @param x A `SimuResults` object from [SimuRun()].
 #' @param ... Optional `Comp_parameters` for bias computation.
 #' @return Invisibly `NULL`; prints bias, SD and mean SE tables.
@@ -341,24 +258,26 @@ print.SimuResults <- function(x, ...) {
                               Comp_parameters = rep(0, SimuResults$initials$p + 1),
                               .homonyms = "first")
   cat("Simulation Results for ")
-  cat(results$methods, ":\n")
+  cat(normalize_methods(results$methods), ":\n")
   tb <- NULL
   tb2 <- NULL
   tb3 <- NULL
+  selected <- if (is.null(results$sequence)) seq_len(results$initials$nrep) else results$sequence
   for (j in results$methods) {
-    tb <- rbind(tb, apply(results$SimuResults[[j]]$Coef, 1, mean) - results$Comp_parameters)
-    tb2 <- rbind(tb2, apply(results$SimuResults[[j]]$Coef, 1, sd))
-    if (j %in% c("DRIV.s", "DRIV.cf.hz.ml.est")) {
-      tb3 <- rbind(tb3, c(mean(sqrt(results$SimuResults[[j]]$Var)), rep(0, nrow(results$SimuResults[[j]]$Coef) - 1)))
+    method <- normalize_methods(j)
+    tb <- rbind(tb, apply(results$SimuResults[[j]]$Coef[, selected, drop = FALSE], 1, mean) - results$Comp_parameters)
+    tb2 <- rbind(tb2, apply(results$SimuResults[[j]]$Coef[, selected, drop = FALSE], 1, sd))
+    if (method %in% c("DRIVE.joint", "DRIVE.ML")) {
+      tb3 <- rbind(tb3, c(mean(sqrt(results$SimuResults[[j]]$Var[selected])), rep(NA_real_, nrow(results$SimuResults[[j]]$Coef) - 1)))
     } else {
-      tb3 <- rbind(tb3, apply(sqrt(results$SimuResults[[j]]$Var), 1, mean))
+      tb3 <- rbind(tb3, apply(sqrt(results$SimuResults[[j]]$Var[, selected, drop = FALSE]), 1, mean))
     }
   }
-  rownames(tb) <- results$methods
+  rownames(tb) <- normalize_methods(results$methods)
   colnames(tb) <- c("theta", paste0("alpha", 1:(SimuResults$initials$p)))
-  rownames(tb2) <- results$methods
+  rownames(tb2) <- normalize_methods(results$methods)
   colnames(tb2) <- c("theta", paste0("alpha", 1:(SimuResults$initials$p)))
-  rownames(tb3) <- results$methods
+  rownames(tb3) <- normalize_methods(results$methods)
   colnames(tb3) <- c("theta", paste0("alpha", 1:(SimuResults$initials$p)))
   cat("\t Mean bias or sampling mean: ", "\n")
   print.default(round(tb, 4), print.gap = 2L)
@@ -373,6 +292,7 @@ print.SimuResults <- function(x, ...) {
 
 
 #' Print treatment-switching estimation results
+#' @method print TRTSWE
 #' @param x A `TRTSWE` object from [TRTSWE()].
 #' @param all Logical; if `TRUE` print full coefficient / SE / p-value tables.
 #' @param ... Unused.
@@ -384,7 +304,7 @@ print.TRTSWE <- function(x, all = FALSE, ...) {
                               .homonyms = "first")
 
   cat("Results for ")
-  cat(names(Results), ":\n")
+  cat(normalize_methods(names(Results)), ":\n")
   tb <- NULL
   tb3 <- NULL
   tb4 <- NULL
@@ -394,8 +314,9 @@ print.TRTSWE <- function(x, all = FALSE, ...) {
   }
 
   for (j in names(Results)) {
-    if (j %in% c("DRIV.s", "DRIV.cf.hz.ml.est")) {
-      if (j %in% "DRIV.s") {
+    method <- normalize_methods(j)
+    if (method %in% c("DRIVE.joint", "DRIVE.ML")) {
+      if (method == "DRIVE.joint") {
         tb <- rbind(tb, as.vector(results[[j]]$Estim$Coef))
       } else {
         tb <- rbind(tb, c(results[[j]]$Estim$Coef, rep(NA, p - 1)))
@@ -406,10 +327,10 @@ print.TRTSWE <- function(x, all = FALSE, ...) {
       tb3 <- rbind(tb3, sqrt(results[[j]]$Estim$Var))
     }
   }
-  rownames(tb) <- names(Results)
-  colnames(tb) <- c("theta", paste0("alpha", 1:(p - 1)))
-  rownames(tb3) <- names(Results)
-  colnames(tb3) <- c("theta", paste0("alpha", 1:(p - 1)))
+  rownames(tb) <- normalize_methods(names(Results))
+  colnames(tb) <- c("theta", if (p > 1L) paste0("alpha", seq_len(p - 1L)))
+  rownames(tb3) <- normalize_methods(names(Results))
+  colnames(tb3) <- colnames(tb)
 
   if (all) {
     cat("\t Coef: ", "\n")

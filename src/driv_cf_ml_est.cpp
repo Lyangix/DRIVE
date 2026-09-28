@@ -111,8 +111,8 @@ SEXP driv_cf_ml_est(
           res[i] = res[i] + exp(int_D(i, j) * betaD) * (dNt(i, j)- Yt(i, j) * (dLam[j] + ConfoundingPart(i, j))) - int_expbetaD(i, j) * (IV[i] * betaD);
           dPhi[i] = dPhi[i] + (dNt(i, j) - Yt(i, j) * (dLam[j] + ConfoundingPart(i, j))) * int_D(i, j) * exp(betaD * int_D(i, j)) -
             exp(betaD*int_D(i,j))*Yt(i,j)*dLam_dbetaD[j]-
-            int_dexpbetaD(i, j) * (IV[j] * betaD) -
-            int_expbetaD(i, j) * IV[j];
+            int_dexpbetaD(i, j) * (IV[i] * betaD) -
+            int_expbetaD(i, j) * IV[i];
         }
         else
         {

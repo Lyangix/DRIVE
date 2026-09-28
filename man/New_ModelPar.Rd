@@ -11,7 +11,8 @@ New_ModelPar(
   dat,
   method,
   Control = list(grid = 100, max_iter = 20, tol = 1e-05, contraction = 0.5, eta = 1e-04,
-    init_parameters = runif(p + 1), learning_rate = 0.1),
+    init_parameters = if (method[1] == "DRIVE.ML") 0.1 else runif(p + 1), learning_rate =
+    0.1),
   ...
 )
 }
